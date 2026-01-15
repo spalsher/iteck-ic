@@ -1,6 +1,6 @@
-# WebRTC Chat Application
+# iTeck IC - Internal Communication App
 
-A full-stack cross-platform chat application with WebRTC for voice/video calls and P2P messaging. Features a modern glassmorphic UI design with responsive layouts.
+**iTeck Internal Communication Application** - A full-stack cross-platform chat application with WebRTC for voice/video calls and P2P messaging. Features a modern glassmorphic UI design with responsive layouts.
 
 ## 🚀 Features
 
@@ -9,12 +9,13 @@ A full-stack cross-platform chat application with WebRTC for voice/video calls a
 - 📹 **Video Calls** - HD video calling with camera controls
 - 💬 **Real-time Chat** - P2P messaging via WebRTC data channels
 - 📸 **Media Sharing** - Send images and videos
-- 🔔 **Call Notifications** - Incoming call alerts
+- 🔔 **Call Notifications** - Incoming call alerts with polyphonic ringtone
 
 ### User Experience
 - 🎨 **Glassmorphic UI** - Modern frosted glass design effect
 - 🌈 **Cyan/White Theme** - Clean and professional color scheme
 - 📱 **Responsive Design** - Optimized for phones, tablets, and desktops
+- 🌐 **Web Support** - Works on Flutter web with remote access
 - ⚡ **Real-time Updates** - Live online/offline status
 - 🔍 **Contact Search** - Find users by username
 - 📲 **QR Code Sharing** - Add contacts by scanning QR codes
@@ -33,6 +34,7 @@ A full-stack cross-platform chat application with WebRTC for voice/video calls a
 - flutter_webrtc for WebRTC
 - socket_io_client for signaling
 - Provider for state management
+- audioplayers for ringtones
 - Material Design 3
 
 ### Backend (Node.js)
@@ -121,9 +123,9 @@ RATE_LIMIT_WINDOW=15
 RATE_LIMIT_MAX=100
 ```
 
-4. Start MongoDB (if running locally):
+4. Start MongoDB:
 ```bash
-mongod
+docker run -d -p 27017:27017 --name mongodb mongo:latest
 ```
 
 5. Run the server:
@@ -158,18 +160,53 @@ cd ..
 
 4. Run the app:
 ```bash
+# Mobile
 flutter run
+
+# Web (local only)
+flutter run -d chrome --web-port 8000
+
+# Web (with remote access)
+flutter run -d chrome --web-hostname 0.0.0.0 --web-port 8000
+```
+
+## 🌐 Remote Access & Deployment
+
+See detailed guides:
+- **Web Remote Access**: `REMOTE_ACCESS_GUIDE.md`
+- **Internet Deployment**: `INTERNET_ACCESS_GUIDE.md`
+- **Port Configuration**: `CUSTOM_WEB_PORT.md`
+
+### Quick Remote Access
+
+```bash
+# Run with remote access (accessible from network)
+cd flutter_app
+flutter run -d chrome --web-hostname 0.0.0.0 --web-port 8000
+
+# Access from remote PC
+# Local network: http://192.168.18.199:8000
+# Internet: http://YOUR_PUBLIC_IP:8000
 ```
 
 ## 📱 Platform-Specific Configuration
 
 ### Android
 
-Update `android/app/build.gradle`:
-```gradle
-minSdkVersion 21
-targetSdkVersion 34
-compileSdkVersion 34
+Update `android/app/build.gradle.kts`:
+```kotlin
+android {
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 21
+        targetSdk = 34
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
+    }
+}
 ```
 
 ### iOS
@@ -178,6 +215,10 @@ Update `ios/Podfile`:
 ```ruby
 platform :ios, '12.0'
 ```
+
+### Web
+
+Web support is fully enabled with platform-specific stubs for incompatible packages.
 
 ## 🔧 API Endpoints
 
@@ -260,6 +301,11 @@ flutter build appbundle --release
 flutter build ios --release
 ```
 
+**Web:**
+```bash
+flutter build web --release
+```
+
 ## 🚀 Deployment
 
 ### Backend Deployment Options
@@ -276,6 +322,12 @@ flutter build ios --release
 ### Mobile App Distribution
 - Google Play Store (Android)
 - Apple App Store (iOS)
+
+### Web Deployment
+- Firebase Hosting
+- Vercel
+- Netlify
+- ngrok (for testing)
 
 ## 🔒 Security Considerations
 
